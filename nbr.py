@@ -59,3 +59,6 @@ meta.update(
 
 with rasterio.open(out_path, "w", **meta) as nbr_out:
     nbr_out.write(nbr, 1)
+
+
+print("done")
