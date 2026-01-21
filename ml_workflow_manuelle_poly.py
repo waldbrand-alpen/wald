@@ -66,6 +66,9 @@ print("Resampling done.")
 
 ####### Resample Block Ende ########
 
+##### Hier kanns weiter gehen ######
+
+
 # helper function for reading bands
 def read_band(path_to_img):
     with rasterio.open(path_to_img, "r") as img:
