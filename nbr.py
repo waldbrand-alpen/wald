@@ -4,10 +4,10 @@ import numpy as np
 
 # Eingabepfade
 
-nir_path_8a = r"data_proj\santinal_data_niko\post_utm\2024-09-05-00_00_2024-09-05-23_59_Sentinel-2_L2A_B8A_(Raw).tiff"
-swir_path_12 = r"data_proj\santinal_data_niko\post_utm\2024-09-05-00_00_2024-09-05-23_59_Sentinel-2_L2A_B12_(Raw).tiff"
+nir_path_8a = r"pre_utm\2024-07-17-00_00_2024-07-17-23_59_Sentinel-2_L2A_B8A_(Raw).tiff"
+swir_path_12 = r"pre_utm\2024-07-17-00_00_2024-07-17-23_59_Sentinel-2_L2A_B12_(Raw).tiff"
 
-out_path = r"output_data\nbr_post_utm.tif"
+out_path = r"output_data\nbr_pre_utm.tif"
 
 
 # Bänder laden
