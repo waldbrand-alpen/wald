@@ -16,3 +16,5 @@ dnbr = nbr_pre - nbr_post
 
 with rasterio.open(out_path, "w", **meta) as dnbr_out:
     dnbr_out.write(dnbr, 1)
+
+print("done")

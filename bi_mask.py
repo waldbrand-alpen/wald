@@ -14,3 +14,5 @@ bi_mask[dnbr >= 0.44] = 1 #hier Grenzwert eingeben, überdem werte auf 1 gesetzt
 
 with rasterio.open(output_path, "w", **meta) as mask:
     mask.write(bi_mask, 1)
+
+print("done")
