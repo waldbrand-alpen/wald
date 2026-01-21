@@ -8,19 +8,46 @@ from pathlib import Path
 from sklearn.ensemble import RandomForestClassifier as RF
 
 
+####### Resample Block ########
+
+# Pfad 
+s2_dir = Path(r"C:\Users\felix\Documents\wald\post_utm")
+
+# Alle Banddateien einsammeln
+band_files = list(s2_dir.glob("*.tif"))
+
+if len(band_files) == 0:
+    raise RuntimeError("No band files found!")
+
+print("Found band files:")
+for bf in band_files:
+    print(f" - {bf.name}")
+
+# Referenzband für Resampling auswählen (erstes Band)
+ref_band_path = [f for f in band_files if "B02" in f.name][0]  # Blaues Band (B02) als Referenz
+
+# Referenz laden 
+with rasterio.open(ref_band_path) as ref:
+    ref_shape = ref.shape
+    ref_transform = ref.transform
+    ref_crs = ref.crs
+
+
+####### Resample Block Ende ########
+
 # helper function for reading bands
 def read_band(path_to_img):
     with rasterio.open(path_to_img, "r") as img:
         return img.read(1).astype(np.float32)
 
 
-# define path to Sentinel-2 data directory and training dataset PFAD INDIVIDUELL ANPASSEN 
+# define path to Sentinel-2 data directory and training dataset !!!HIER PFAD ANPASSEN!!!
 s2_bands = Path(r"C:\Users\felix\Documents\wald\post_utm")
 
 
 # read individual Sentinel-2 bands as numpy array and add to a list
 bands = []
-for band in s2_bands.glob("*.tif"):
+for band in s2_bands.glob("*.tiff"):
     data = read_band(band)
     bands.append(data)
 
@@ -28,8 +55,8 @@ for band in s2_bands.glob("*.tif"):
 bands = np.dstack(bands)
 # print (s2_data)
 
-# read rasterized labels 
-y = read_band(r"C:\0_Python\Python_2\6_ml_classification\data\data\output\output.tif")
+# read rasterized labels !!!HIER PFAD ANPASSEN!!!
+y = read_band(r"C:\Users\felix\Documents\wald\output_data\Poly_manuell.tif")
 
 
 # extract number of rows, cols and bands from Sentinel-2 array for reshaping
@@ -58,41 +85,46 @@ rf = RF(n_estimators=n_trees, n_jobs=-1, oob_score=True, random_state=123)
 # train random forest
 rf.fit(X_clean, y_clean)
 
-# predict on all pixels (including those without a label/not used for training)
-# here, we actually make use of the model we just trained!
-# this step is also called "inference"
-y_predicted = rf.predict(X)
-
-print(X.shape)
-print(y_predicted.shape)
-
-# now we need to reshape the output back to a 2-dimensional raster,
-# otherwise we won't be able to view the output in QGIS!
-y_predicted_2d  = y_predicted.reshape((rows, cols))
-print(y_predicted_2d.shape)
-
-# read metadata of label raster for output
-template = {}
-training_raster = r"C:\0_Python\Python_2\6_ml_classification\data\data\output\output.tif"
-with rasterio.open(training_raster, "r") as img:
-    template["crs"] = img.crs
-    template["transform"] = img.transform
-    template["height"] = img.height
-    template["width"] = img.width
+# # predict on all pixels (including those without a label/not used for training)
+# # here, we actually make use of the model we just trained!
+# # this step is also called "inference"
 
 
-# write our predicted output as GeoTiff
-with rasterio.open(
-    "predicted_labels.tif",
-    "w",
-    driver="GTiff",
-    crs=template["crs"],
-    transform=template["transform"],
-    width=template["width"],
-    height=template["height"],
-    count=1,
-    dtype=y_predicted_2d.dtype,
-) as fobj:
-    fobj.write(y_predicted_2d, 1)
+# y_predicted = rf.predict(X)
 
-# now visualize the result in QGIS!
+# print(X.shape)
+# print(y_predicted.shape)
+
+# # now we need to reshape the output back to a 2-dimensional raster,
+# # otherwise we won't be able to view the output in QGIS!
+# y_predicted_2d  = y_predicted.reshape((rows, cols))
+# print(y_predicted_2d.shape)
+
+# # read metadata of label raster for output !!!HIER PFAD ANPASSEN!!!
+# template = {}
+# training_raster = r"C:\Users\felix\Documents\wald\output_data\Poly_manuell.tif"
+# with rasterio.open(training_raster, "r") as img:
+#     template["crs"] = img.crs
+#     template["transform"] = img.transform
+#     template["height"] = img.height
+#     template["width"] = img.width
+
+
+# # write our predicted output as GeoTiff
+# with rasterio.open(
+#     "predicted_labels.tif",
+#     "w",
+#     driver="GTiff",
+#     crs=template["crs"],
+#     transform=template["transform"],
+#     width=template["width"],
+#     height=template["height"],
+#     count=1,
+#     dtype=y_predicted_2d.dtype,
+# ) as fobj:
+#     fobj.write(y_predicted_2d, 1)
+
+# # now visualize the result in QGIS!
+
+
+print ("done")
