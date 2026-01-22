@@ -8,7 +8,9 @@ import rasterio
 import rasterio.warp
 from pathlib import Path
 from sklearn.ensemble import RandomForestClassifier as RF
-
+from sklearn.ensemble import RandomForestClassifier as RF
+from sklearn.model_selection import train_test_split
+from sklearn.metrics import confusion_matrix, ConfusionMatrixDisplay
 
 ####### Resample Block Satellite Images ######## (Satellitenbilder auf gleiche Auflösung bringen)
 
@@ -162,7 +164,7 @@ print("Unique training labels:", np.unique(y_train))
 
 ####### ML Training Block ######
 
-# create random forest model
+# set up random forest
 n_trees = 100
 rf = RF(n_estimators=n_trees, n_jobs=-1, oob_score=True, random_state=123)
 
@@ -176,6 +178,13 @@ print(rf.oob_score_)
 # # # this step is also called "inference"
 
 print("done.")
+
+
+
+
+
+
+
 
 # # y_predicted = rf.predict(X)
 
