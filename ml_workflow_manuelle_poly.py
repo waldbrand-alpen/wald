@@ -146,6 +146,17 @@ y = y.reshape((rows * cols,))
 print("X shape after reshape:", X.shape)
 print("y shape after reshape:", y.shape)
 
+# No Data Werte entfernen
+valid_mask = (y == 0) | (y == 1)
+
+# select only valid samples for training
+X_train = X[valid_mask]
+y_train = y[valid_mask]
+
+print("Training samples:", X_train.shape[0])
+print("Unique training labels:", np.unique(y_train))
+
+
 ######## Prepare Data for ML Ende ######
 
 
@@ -155,14 +166,16 @@ print("y shape after reshape:", y.shape)
 n_trees = 100
 rf = RF(n_estimators=n_trees, n_jobs=-1, oob_score=True, random_state=123)
 
-
 # train random forest
-rf.fit(X, y)
+rf.fit(X_train, y_train)
+
+print(rf.oob_score_)
 
 # # # predict on all pixels (including those without a label/not used for training)
 # # # here, we actually make use of the model we just trained!
 # # # this step is also called "inference"
 
+print("done.")
 
 # # y_predicted = rf.predict(X)
 
