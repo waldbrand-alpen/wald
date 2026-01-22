@@ -76,7 +76,7 @@ print("Stacking done.")
 
 ###### STACK BANDS ENDE ######
 
-###### LABEL BLOCK (RESAMPLED TO BAND GRID) ######
+###### LABEL BLOCK (RESAMPLED TO BAND GRID) ###### Hier mal fragen ob das Label resampeln Problematisch ist, und wir die Labels nochmal neu anlegen sollten
 
 label_raster_path = Path(
     r"C:\Users\felix\Documents\wald\output_data\Poly_manuell.tif")
