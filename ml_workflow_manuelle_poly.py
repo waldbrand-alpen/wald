@@ -2,6 +2,7 @@
 
 
 # imports
+from tempfile import template
 import numpy as np
 import rasterio
 import rasterio.warp
@@ -9,7 +10,7 @@ from pathlib import Path
 from sklearn.ensemble import RandomForestClassifier as RF
 
 
-####### Resample Block ######## (Satellitenbilder auf gleiche Auflösung bringen)
+####### Resample Block Satellite Images ######## (Satellitenbilder auf gleiche Auflösung bringen)
 
 # Pfad 
 s2_dir = Path(r"C:\Users\felix\Documents\wald\post_utm")
@@ -71,7 +72,7 @@ print("Resampling done.")
 ###### STACK BANDS ######
 
 # stack all bands along the third dimension in a numpy array
-bands = np.dstack(resampled_bands)
+X = np.dstack(resampled_bands)
 print("Stacking done.")
 
 ###### STACK BANDS ENDE ######
@@ -92,7 +93,7 @@ with rasterio.open(label_raster_path) as src:
         y = np.empty(ref_shape, dtype=np.int32)
 
         rasterio.warp.reproject(
-            source=rasterio.band(src, 1),   # <-- WICHTIG!
+            source=rasterio.band(src, 1),
             destination=y,
             src_transform=src.transform,
             src_crs=src.crs,
@@ -105,74 +106,58 @@ print("Labels loaded.")
 # print("Label shape:", y.shape)
 print("Unique label values:", np.unique(y))
 
+
+######## Label output checken ########## ??????
+
+# # write our predicted output as GeoTiff
+# with rasterio.open(template) as src:
+#     with rasterio.open(
+#         "predicted_labels.tif",
+#         "w",
+#         driver="GTiff",
+#         crs=src.crs,
+#         transform=src.transform,
+#         width=src.width,
+#         height=src.height,
+#         count=1,
+#         dtype=y.dtype,
+#     ) as dst:
+#         dst.write(y, 1)
+
 ###### LABEL BLOCK ENDE ######
 
 
 ####### Geometrie Check ######
 
-if y.shape != bands.shape[:2]:
+if y.shape != X.shape[:2]:
     raise RuntimeError("Shape mismatch between labels and bands!")
+
+print(X.shape)
+print(y.shape)
 
 ####### Geometrie Check Ende ######
 
+####### Prepare Data for ML, reshape X and y ######
 
+rows, cols, bands = X.shape
+X = X.reshape((rows * cols, bands))
+y = y.reshape((rows * cols,))
 
+# print("X shape after reshape:", X.shape)
+# print("y shape after reshape:", y.shape)
 
-
-
+######## Prepare Data for ML Ende ######
 
 
 ####### ML Training Block ######
 
-# # helper function for reading bands
-# def read_band(path_to_img):
-#     with rasterio.open(path_to_img, "r") as img:
-#         return img.read(1).astype(np.float32)
+# create random forest model
+n_trees = 100
+rf = RF(n_estimators=n_trees, n_jobs=-1, oob_score=True, random_state=123)
 
 
-# # define path to Sentinel-2 data directory and training dataset !!!HIER PFAD ANPASSEN!!!
-# s2_bands = Path(r"C:\Users\felix\Documents\wald\post_utm")
-
-
-# # read individual Sentinel-2 bands as numpy array and add to a list
-# bands = []
-# for band in s2_bands.glob("*.tiff"):
-#     data = read_band(band)
-#     bands.append(data)
-
-# # stack all bands along the third dimension in a numpy array
-# bands = np.dstack(bands)
-# # print (s2_data)
-
-# # read rasterized labels !!!HIER PFAD ANPASSEN!!!
-# y = read_band(r"C:\Users\felix\Documents\wald\output_data\Poly_manuell.tif")
-
-
-# # extract number of rows, cols and bands from Sentinel-2 array for reshaping
-# rows, cols, n_bands = bands.shape
-
-# # reshape features (bands)
-# X = bands.reshape((rows * cols, n_bands))
-# y = y.reshape((rows * cols))
-
-# # print(X.shape)
-# # print(y.shape) 
-
-# # eliminate no-data pixels from both S2 array and labels (no data value is -1)
-# y_clean = y[y >= 0]
-
-# X_clean = X[y >= 0, :]
-
-# # check that the shape of the cleaned data sets matches
-# # print(X_clean.shape)
-# # print(y_clean.shape)
-
-# # create random forest model
-# n_trees = 100
-# rf = RF(n_estimators=n_trees, n_jobs=-1, oob_score=True, random_state=123)
-
-# # train random forest
-# rf.fit(X_clean, y_clean)
+# train random forest
+rf.fit(X, y)
 
 # # # predict on all pixels (including those without a label/not used for training)
 # # # here, we actually make use of the model we just trained!
