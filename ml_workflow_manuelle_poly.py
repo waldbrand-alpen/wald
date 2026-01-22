@@ -132,8 +132,8 @@ print("Unique label values:", np.unique(y))
 if y.shape != X.shape[:2]:
     raise RuntimeError("Shape mismatch between labels and bands!")
 
-print(X.shape)
-print(y.shape)
+print("Bands shape:", X.shape)
+print("Labels shape:", y.shape)
 
 ####### Geometrie Check Ende ######
 
@@ -143,8 +143,8 @@ rows, cols, bands = X.shape
 X = X.reshape((rows * cols, bands))
 y = y.reshape((rows * cols,))
 
-# print("X shape after reshape:", X.shape)
-# print("y shape after reshape:", y.shape)
+print("X shape after reshape:", X.shape)
+print("y shape after reshape:", y.shape)
 
 ######## Prepare Data for ML Ende ######
 
