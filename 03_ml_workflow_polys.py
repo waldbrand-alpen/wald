@@ -27,87 +27,70 @@ for band in s2_bands.glob("*.tiff"):
     data = read_band(band)
     bands.append(data)
 
+# print(bands)
 bands = np.dstack(bands)
+print("Bänderformat:", bands.shape)
 
 ###### STACK BANDS ENDE ######
 
-###### LABEL BLOCK (RESAMPLE TO BAND GRID) ###### Hier mal fragen ob das Label resampeln Problematisch ist, und wir die Labels nochmal neu anlegen sollten
+###### LABEL BLOCK ######
 
-label_raster_path = Path(r"C:\Users\felix\Documents\wald\output_data\Poly_manuell.tif")
-
-with rasterio.open(label_raster_path) as src:
-
-    # Falls geometrie schon passt
-    if src.shape == ref_shape and src.transform == ref_transform:
-        y = src.read(1).astype(np.int32)
-
-    # Sonst: auch Polygone Resamplen
-    else:
-        y = np.empty(ref_shape, dtype=np.int32)
-
-        rasterio.warp.reproject(
-            source=rasterio.band(src, 1),
-            destination=y,
-            src_transform=src.transform,
-            src_crs=src.crs,
-            dst_transform=ref_transform,
-            dst_crs=ref_crs,
-            resampling=rasterio.enums.Resampling.nearest)
-        
-
-print("Labels loaded.")
-# print("Label shape:", y.shape)
-print("Unique label values:", np.unique(y))
-
-###### LABEL BLOCK ENDE ######
+y = read_band(r"C:\Users\felix\Documents\wald\output_data\labels_burned_unburned.tiff")
+print("Labelformat", y.shape)
 
 
-####### Geometrie Check ######
+####### LABEL BLOCK ENDE ######
 
-print("Bands shape:", X.shape)
-print("Labels shape:", y.shape)
 
-####### Geometrie Check Ende ######
+# ####### Reshaping ######
+
+# rows, cols, n_bands = bands.shape
+
+# X = bands.reshape((rows * cols, n_bands))
+# y = y.reshape((rows * cols,))
+
+# print("X shape after reshape:", X.shape)
+# print("y shape after reshape:", y.shape)
+
+# ####### Reshaping ENDE ######
+
+# ####### No-Data bearbeiten ######
+
+# # eliminate no-data pixels from both S2 array and labels (no data value is -1)
+# y_clean = y[y >= 0]
+# X_clean = X[y >= 0, :]
+
+# # check that the shape of the cleaned data sets matches
+# print(X_clean.shape)
+# print(y_clean.shape)
+
+# ####### No-Data bearbeiten ENDE ######
+
+
 
 ####### Prepare Data for ML, reshape X and y ######
 
-rows, cols, bands = X.shape
-X = X.reshape((rows * cols, bands))
-y = y.reshape((rows * cols,))
+# rows, cols, bands = X.shape
+# X = X.reshape((rows * cols, bands))
+# y = y.reshape((rows * cols,))
 
-print("X shape after reshape:", X.shape)
-print("y shape after reshape:", y.shape)
+# print("X shape after reshape:", X.shape)
+# print("y shape after reshape:", y.shape)
 
-# No Data Werte entfernen
-valid_mask = (y == 0) | (y == 1)
+# # No Data Werte entfernen
+# valid_mask = (y == 0) | (y == 1)
 
-# select only valid samples for training
-X_train = X[valid_mask]
-y_train = y[valid_mask]
+# # select only valid samples for training
+# X_train = X[valid_mask]
+# y_train = y[valid_mask]
 
-print("Training samples:", X_train.shape[0])
-print("Unique training labels:", np.unique(y_train))
-
-
-######## Prepare Data for ML Ende ######
+# print("Training samples:", X_train.shape[0])
+# print("Unique training labels:", np.unique(y_train))
 
 
-####### ML Training Block ######
+# ######## Prepare Data for ML Ende ######
 
-# set up random forest
-n_trees = 100
-rf = RF(n_estimators=n_trees, n_jobs=-1, oob_score=True, random_state=123)
 
-# train random forest
-rf.fit(X_train, y_train)
-
-print(rf.oob_score_)
-
-# # # predict on all pixels (including those without a label/not used for training)
-# # # here, we actually make use of the model we just trained!
-# # # this step is also called "inference"
-
-print("done.")
 
 
 

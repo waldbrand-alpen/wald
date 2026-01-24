@@ -20,11 +20,11 @@ training_vector = r"C:\Users\felix\Documents\wald\output_data\Polygone_burned_un
 template_raster = r"C:\Users\felix\Documents\wald\post_utm\resampled\rs_2024-09-05-00_00_2024-09-05-23_59_Sentinel-2_L2A_B02_(Raw).tiff"
 
 # path to rasterized output
-training_raster = r"C:\Users\felix\Documents\wald\output_data\labels_burned_unburned.tif"
+training_raster = r"C:\Users\felix\Documents\wald\output_data\labels_burned_unburned.tiff"
 
 ######## PFADE ENDE #########
 
-######## Auflösuung vom template Raster holen #########
+######## Auflösung vom template Raster holen #########
 
 with rasterio.open(template_raster) as fobj:
     xmin = fobj.bounds.left
@@ -32,12 +32,11 @@ with rasterio.open(template_raster) as fobj:
     ymin = fobj.bounds.bottom
     ymax = fobj.bounds.top
 
-    res = fobj.res[0] 
+    res = fobj.res[0]
 
 ######## Auflösuung vom template Raster holen ENDE #########
 
 ######## Rasterize Labels #########
-
 
 cmd = (
     f"gdal_rasterize "
