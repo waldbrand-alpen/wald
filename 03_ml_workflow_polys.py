@@ -98,9 +98,20 @@ plt.show()
 
 y_full_pred = rf.predict(X_clean)
 
-# write our predicted output as GeoTiff
+# read metadata of ONE BAND raster for output (damit es 1:1 zum ganzen Bild passt)
+template = {}
+template_raster = r"Nachher_Vinschgau\B02_nachher.tiff"
+
+#herausschreiben auf ein vorhergenommenes raster
+with rasterio.open(template_raster, "r") as img:
+    template["crs"] = img.crs
+    template["transform"] = img.transform
+    template["height"] = img.height
+    template["width"] = img.width
+
+# write our predicted output as GeoTiff (ganzes Raster)
 with rasterio.open(
-    "predicted_labels.tif",
+    "predicted_labels_full.tif",
     "w",
     driver="GTiff",
     crs=template["crs"],
@@ -108,6 +119,9 @@ with rasterio.open(
     width=template["width"],
     height=template["height"],
     count=1,
-    dtype=y_predicted_2d.dtype,
+    dtype=y_pred_all_2d.dtype,
 ) as fobj:
-    fobj.write(y_predicted_2d, 1)
+    fobj.write(y_pred_all_2d, 1)
+
+print("fertig: predicted_labels_full.tif")
+
