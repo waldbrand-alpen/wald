@@ -36,7 +36,6 @@ ymax = transform.f
 xmax = xmin + width * transform.a
 ymin = ymax + height * transform.e
 
-
 ######## Auflösuung vom template Raster holen ENDE #########
 
 ######## Rasterize Labels #########
