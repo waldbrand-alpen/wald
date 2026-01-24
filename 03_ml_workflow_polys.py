@@ -13,6 +13,8 @@ from sklearn.model_selection import train_test_split
 from sklearn.metrics import confusion_matrix, ConfusionMatrixDisplay
 
 
+RANDOM_STATE = 42
+
 ###### STACK BANDS ######
 
 # helper function for reading bands
@@ -52,9 +54,9 @@ y = y.reshape((rows * cols,))
 print("X shape after reshape:", X.shape)
 print("y shape after reshape:", y.shape)
 
-# ####### Reshaping ENDE ######
+####### Reshaping ENDE ######
 
-# ####### No-Data bearbeiten ######
+####### No-Data bearbeiten ######
 
 # eliminate no-data pixels from both S2 array and labels (no data value is -1)
 y_clean = y[y >= 0]
@@ -66,32 +68,23 @@ print(y_clean.shape)
 
 # ####### No-Data bearbeiten ENDE ######
 
+####### Split Daten für ML und RF ######
 
+# extract train and test data and labels
+X_train, X_test, y_train, y_test = train_test_split(X_clean, y_clean, test_size=0.2, random_state=RANDOM_STATE)
 
-####### Prepare Data for ML, reshape X and y ######
+n_trees = 300
+rf = RF(n_estimators=n_trees, n_jobs=-1, oob_score=True, random_state=RANDOM_STATE)
 
-# rows, cols, bands = X.shape
-# X = X.reshape((rows * cols, bands))
-# y = y.reshape((rows * cols,))
+rf.fit(X_train, y_train)
 
-# print("X shape after reshape:", X.shape)
-# print("y shape after reshape:", y.shape)
+# apply model on unseen test set
+y_pred = rf.predict(X_test)
 
-# # No Data Werte entfernen
-# valid_mask = (y == 0) | (y == 1)
-
-# # select only valid samples for training
-# X_train = X[valid_mask]
-# y_train = y[valid_mask]
-
-# print("Training samples:", X_train.shape[0])
-# print("Unique training labels:", np.unique(y_train))
-
-
-# ######## Prepare Data for ML Ende ######
-
-
-
+# calculate confusion matrix
+cnf_mat = confusion_matrix(y_test, y_pred)
+print(cnf_mat)
+print("OOB score:", rf.oob_score_)
 
 
 

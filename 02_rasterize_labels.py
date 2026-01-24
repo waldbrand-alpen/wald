@@ -7,7 +7,7 @@ import rasterio
 out_format = "GTiff"
 datatype_out = "Int16"
 burn_field = "gridcode"   # name of the attribute column in the vector dataset
-nodata_value = "-1"
+nodata_value = -1
 
 ######## file Eigenschaften ENDE #########
 
