@@ -2,6 +2,7 @@
 
 
 # imports
+import matplotlib.pyplot as plt
 from tempfile import template
 import numpy as np
 import rasterio
@@ -85,6 +86,18 @@ y_pred = rf.predict(X_test)
 cnf_mat = confusion_matrix(y_test, y_pred)
 print(cnf_mat)
 print("OOB score:", rf.oob_score_)
+
+# plot confusion matrix
+disp = ConfusionMatrixDisplay(confusion_matrix=cnf_mat)
+disp.plot()
+plt.show() 
+
+####### Split Daten für ML und RF ENDE ######
+
+####### Predict on full image ######
+
+y_full_pred = rf.predict(X_clean)
+print("Predicted full image shape (1D):", y_full_pred.shape)
 
 
 
