@@ -44,25 +44,25 @@ print("Labelformat", y.shape)
 
 # ####### Reshaping ######
 
-# rows, cols, n_bands = bands.shape
+rows, cols, n_bands = bands.shape
 
-# X = bands.reshape((rows * cols, n_bands))
-# y = y.reshape((rows * cols,))
+X = bands.reshape((rows * cols, n_bands))
+y = y.reshape((rows * cols,))
 
-# print("X shape after reshape:", X.shape)
-# print("y shape after reshape:", y.shape)
+print("X shape after reshape:", X.shape)
+print("y shape after reshape:", y.shape)
 
 # ####### Reshaping ENDE ######
 
 # ####### No-Data bearbeiten ######
 
-# # eliminate no-data pixels from both S2 array and labels (no data value is -1)
-# y_clean = y[y >= 0]
-# X_clean = X[y >= 0, :]
+# eliminate no-data pixels from both S2 array and labels (no data value is -1)
+y_clean = y[y >= 0]
+X_clean = X[y >= 0, :]
 
-# # check that the shape of the cleaned data sets matches
-# print(X_clean.shape)
-# print(y_clean.shape)
+# check that the shape of the cleaned data sets matches
+print(X_clean.shape)
+print(y_clean.shape)
 
 # ####### No-Data bearbeiten ENDE ######
 
