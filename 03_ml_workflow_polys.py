@@ -94,10 +94,20 @@ plt.show()
 
 ####### Split Daten für ML und RF ENDE ######
 
-####### Predict on full image ######
+####### Predict on full image and GEO Output ######
 
 y_full_pred = rf.predict(X_clean)
-print("Predicted full image shape (1D):", y_full_pred.shape)
 
-
-
+# write our predicted output as GeoTiff
+with rasterio.open(
+    "predicted_labels.tif",
+    "w",
+    driver="GTiff",
+    crs=template["crs"],
+    transform=template["transform"],
+    width=template["width"],
+    height=template["height"],
+    count=1,
+    dtype=y_predicted_2d.dtype,
+) as fobj:
+    fobj.write(y_predicted_2d, 1)
