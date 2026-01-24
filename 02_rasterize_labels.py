@@ -26,13 +26,16 @@ training_raster = r"C:\Users\felix\Documents\wald\output_data\labels_burned_unbu
 
 ######## Auflösung vom template Raster holen #########
 
-with rasterio.open(template_raster) as fobj:
-    xmin = fobj.bounds.left
-    xmax = fobj.bounds.right
-    ymin = fobj.bounds.bottom
-    ymax = fobj.bounds.top
+with rasterio.open(template_raster) as src:
+    width = src.width
+    height = src.height
+    transform = src.transform
 
-    res = fobj.res[0]
+xmin = transform.c
+ymax = transform.f
+xmax = xmin + width * transform.a
+ymin = ymax + height * transform.e
+
 
 ######## Auflösuung vom template Raster holen ENDE #########
 
@@ -43,8 +46,8 @@ cmd = (
     f"-a {burn_field} "
     f"-of {out_format} "
     f"-te {xmin} {ymin} {xmax} {ymax} "
-    f"-tr {res} {res} "
-    f"-a_nodata {nodata_value} "
+    f"-ts {width} {height} "
+    f"-a_nodata -1 "
     f"-ot {datatype_out} "
     f"{training_vector} "
     f"{training_raster}"
@@ -52,3 +55,10 @@ cmd = (
 
 print(cmd)
 os.system(cmd)
+
+
+with rasterio.open(template_raster) as src:
+    print("Template raster shape:", src.shape)
+
+with rasterio.open(training_raster) as src:
+    print("Training raster shape:", src.shape)
