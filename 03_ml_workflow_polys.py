@@ -94,15 +94,19 @@ plt.show()
 
 ####### Split Daten für ML und RF ENDE ######
 
-####### Predict on full image and GEO Output ######
+####### Predict on full image and create GEO Output ######
 
 y_full_pred = rf.predict(X_clean)
 
+# reshape to 2D array
+y_pred_all_2d = np.full(y.shape, -1, dtype=y_full_pred.dtype)
+y_pred_all_2d[y >= 0] = y_full_pred
+
 # read metadata of ONE BAND raster for output (damit es 1:1 zum ganzen Bild passt)
 template = {}
-template_raster = r"Nachher_Vinschgau\B02_nachher.tiff"
+template_raster = r"C:\Users\felix\Documents\wald\post_utm\2024-09-05-00_00_2024-09-05-23_59_Sentinel-2_L2A_B02_(Raw).tiff"
 
-#herausschreiben auf ein vorhergenommenes raster
+# herausschreiben auf ein vorhergenommenes raster
 with rasterio.open(template_raster, "r") as img:
     template["crs"] = img.crs
     template["transform"] = img.transform
