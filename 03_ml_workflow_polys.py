@@ -96,11 +96,13 @@ plt.show()
 
 ####### Predict on full image and create GEO Output ######
 
-y_full_pred = rf.predict(X_clean)
+y_full_pred = rf.predict(X)
 
 # reshape to 2D array
-y_pred_all_2d = np.full(y.shape, -1, dtype=y_full_pred.dtype)
-y_pred_all_2d[y >= 0] = y_full_pred
+y_pred_all_2d = y_full_pred.reshape(rows, cols)
+
+
+# y_pred_all_2d[y >= 0] = y_full_pred # no Data 
 
 # read metadata of ONE BAND raster for output (damit es 1:1 zum ganzen Bild passt)
 template = {}
