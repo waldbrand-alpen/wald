@@ -13,10 +13,10 @@ from sklearn.ensemble import RandomForestClassifier as RF
 from sklearn.model_selection import train_test_split
 from sklearn.metrics import confusion_matrix, ConfusionMatrixDisplay
 
-
 RANDOM_STATE = 42
 
-###### STACK BANDS ######
+
+###### STACK BANDS Jasper ######
 
 # helper function for reading bands
 def read_band(path_to_img):
@@ -34,18 +34,39 @@ for band in s2_bands.glob("*.tiff"):
 bands = np.dstack(bands)
 print("Bänderformat:", bands.shape)
 
-###### STACK BANDS ENDE ######
+###### STACK BANDS Jasper ENDE ######
+
+
+####### STACK BANDS Vinchgau ######
+
+# helper function for reading bands
+def read_band(path_to_img):
+    with rasterio.open(path_to_img, "r") as img:
+        return img.read(1).astype(np.float32)
+
+s2_bands = Path(r"C:\Users\felix\Documents\wald\vinschgau")
+
+bands_vinchgau = []
+for band in s2_bands.glob("*.tiff"):
+    data = read_band(band)
+    bands_vinchgau.append(data)
+
+# print(bands)
+bands = np.dstack(bands_vinchgau)
+print("Bänderformat Vinchgau:", bands.shape)
+
+####### STACK BANDS Vinchgau ENDE ######
+
 
 ###### LABEL BLOCK ######
 
 y = read_band(r"C:\Users\felix\Documents\wald\output_data\labels_burned_unburned.tiff")
 print("Labelformat", y.shape)
 
-
 ####### LABEL BLOCK ENDE ######
 
 
-# ####### Reshaping ######
+####### Reshaping ######
 
 rows, cols, n_bands = bands.shape
 
@@ -56,6 +77,7 @@ print("X shape after reshape:", X.shape)
 print("y shape after reshape:", y.shape)
 
 ####### Reshaping ENDE ######
+
 
 ####### No-Data bearbeiten ######
 
@@ -68,6 +90,7 @@ print(X_clean.shape)
 print(y_clean.shape)
 
 # ####### No-Data bearbeiten ENDE ######
+
 
 ####### Split Daten für ML und RF ######
 
@@ -94,13 +117,13 @@ plt.show()
 
 ####### Split Daten für ML und RF ENDE ######
 
-####### Predict on full image and create GEO Output ######
+
+####### Predict on full image (Jasper) and create GEO Output ######
 
 y_full_pred = rf.predict(X)
 
 # reshape to 2D array
 y_pred_all_2d = y_full_pred.reshape(rows, cols)
-
 
 # y_pred_all_2d[y >= 0] = y_full_pred # no Data 
 
@@ -117,7 +140,7 @@ with rasterio.open(template_raster, "r") as img:
 
 # write our predicted output as GeoTiff (ganzes Raster)
 with rasterio.open(
-    "predicted_labels_full.tif",
+    r"C:\Users\felix\Documents\wald\output_data\predicted_labels_jasper_full.tif",
     "w",
     driver="GTiff",
     crs=template["crs"],
@@ -129,5 +152,43 @@ with rasterio.open(
 ) as fobj:
     fobj.write(y_pred_all_2d, 1)
 
-print("fertig: predicted_labels_full.tif")
+print("fertig: predicted_labels_jasper_full.tif")
 
+####### Predict on full image and create GEO Output for Jasper ENDE ######
+
+
+####### Predict on full image (Vinchgau) and create GEO Output ######
+
+y_full_pred = rf.predict(X)
+
+# reshape to 2D array
+y_pred_all_2d = y_full_pred.reshape(rows, cols)
+
+# y_pred_all_2d[y >= 0] = y_full_pred # no Data 
+
+# read metadata of ONE BAND raster for output (damit es 1:1 zum ganzen Bild passt)
+template = {}
+template_raster = r"C:\Users\felix\Documents\wald\vinschgau\B02_nachher.tiff"
+
+# herausschreiben auf ein vorhergenommenes raster
+with rasterio.open(template_raster, "r") as img:
+    template["crs"] = img.crs
+    template["transform"] = img.transform
+    template["height"] = img.height
+    template["width"] = img.width
+
+# write our predicted output as GeoTiff (ganzes Raster)
+with rasterio.open(
+    r"C:\Users\felix\Documents\wald\output_data\predicted_labels_vinchgau_full.tif",
+    "w",
+    driver="GTiff",
+    crs=template["crs"],
+    transform=template["transform"],
+    width=template["width"],
+    height=template["height"],
+    count=1,
+    dtype=y_pred_all_2d.dtype,
+) as fobj:
+    fobj.write(y_pred_all_2d, 1)
+
+print("fertig: predicted_labels_vinchgau_full.tif")
