@@ -79,6 +79,17 @@ print("y shape after reshape:", y.shape)
 ####### Reshaping ENDE ######
 
 
+####### Reshaping Vinschgau ######
+
+rows, cols, n_bands = bands_vinschgau.shape
+
+X_Vinschgau = bands_vinschgau.reshape((rows * cols, n_bands))
+
+print("X_Vinschgau shape after reshape:", X_Vinschgau.shape)
+
+####### Reshaping ENDE ######
+
+
 ####### No-Data bearbeiten ######
 
 # eliminate no-data pixels from both S2 array and labels (no data value is -1)
@@ -89,7 +100,7 @@ X_clean = X[y >= 0, :]
 print(X_clean.shape)
 print(y_clean.shape)
 
-# ####### No-Data bearbeiten ENDE ######
+####### No-Data bearbeiten ENDE ######
 
 
 ####### Split Daten für ML und RF ######
@@ -113,7 +124,7 @@ print("OOB score:", rf.oob_score_)
 # plot confusion matrix
 disp = ConfusionMatrixDisplay(confusion_matrix=cnf_mat)
 disp.plot()
-plt.show() 
+plt.show()
 
 ####### Split Daten für ML und RF ENDE ######
 
@@ -159,10 +170,10 @@ print("fertig: predicted_labels_jasper_full.tif")
 
 ####### Predict on full image (Vinchgau) and create GEO Output ######
 
-y_full_pred = rf.predict(X)
+y_full_pred_Vinschgau = rf.predict(X_Vinschgau)
 
 # reshape to 2D array
-y_pred_all_2d = y_full_pred.reshape(rows, cols)
+y_pred_all_2d_Vinschgau = y_full_pred_Vinschgau.reshape(rows, cols)
 
 # y_pred_all_2d[y >= 0] = y_full_pred # no Data 
 
@@ -179,7 +190,7 @@ with rasterio.open(template_raster, "r") as img:
 
 # write our predicted output as GeoTiff (ganzes Raster)
 with rasterio.open(
-    r"C:\Users\felix\Documents\wald\output_data\predicted_labels_vinchgau_full.tif",
+    r"C:\Users\felix\Documents\wald\output_data\predicted_labels_vinschgau_full.tif",
     "w",
     driver="GTiff",
     crs=template["crs"],
@@ -191,4 +202,4 @@ with rasterio.open(
 ) as fobj:
     fobj.write(y_pred_all_2d, 1)
 
-print("fertig: predicted_labels_vinchgau_full.tif")
+print("fertig: predicted_labels_vinschgau_full.tif")
