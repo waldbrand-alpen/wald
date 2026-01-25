@@ -37,25 +37,25 @@ print("Bänderformat:", bands.shape)
 ###### STACK BANDS Jasper ENDE ######
 
 
-####### STACK BANDS Vinchgau ######
+####### STACK BANDS Vinschgau ######
 
 # helper function for reading bands
 def read_band(path_to_img):
     with rasterio.open(path_to_img, "r") as img:
         return img.read(1).astype(np.float32)
 
-s2_bands = Path(r"C:\Users\felix\Documents\wald\vinschgau")
+s2_bands_vinschgau = Path(r"C:\Users\felix\Documents\wald\vinschgau")
 
-bands_vinchgau = []
+bands_vinschgau = []
 for band in s2_bands.glob("*.tiff"):
     data = read_band(band)
-    bands_vinchgau.append(data)
+    bands_vinschgau.append(data)
 
 # print(bands)
-bands = np.dstack(bands_vinchgau)
+bands = np.dstack(bands_vinschgau)
 print("Bänderformat Vinchgau:", bands.shape)
 
-####### STACK BANDS Vinchgau ENDE ######
+####### STACK BANDS Vinschgau ENDE ######
 
 
 ###### LABEL BLOCK ######
@@ -66,7 +66,7 @@ print("Labelformat", y.shape)
 ####### LABEL BLOCK ENDE ######
 
 
-####### Reshaping ######
+####### Reshaping Jasper ######
 
 rows, cols, n_bands = bands.shape
 
