@@ -54,7 +54,7 @@ print("Bänderformat Jasper:", bands.shape)
 
 # helper function for reading bands
 
-s2_bands_vinschgau = Path(r"C:\Users\felix\Documents\wald\vinschgau")
+s2_bands_vinschgau = Path(r"C:\Users\felix\Documents\wald\vinschgau\resampled")
 
 bands_vinschgau = []
 for b in band_order:
@@ -64,7 +64,7 @@ for b in band_order:
 bands_vinschgau = np.dstack(bands_vinschgau)
 print("Bänderformat Vinschgau:", bands_vinschgau.shape)
 
-# s2_bands_vinschgau = Path(r"C:\Users\felix\Documents\wald\vinschgau")
+# s2_bands_vinschgau = Path(r"C:\Users\felix\Documents\wald\vinschgau\resampled")
 
 # bands_vinschgau = []
 # for band in s2_bands_vinschgau.glob("*.tiff"):
@@ -199,7 +199,7 @@ y_pred_all_2d_Vinschgau = y_full_pred_Vinschgau.reshape(rows_v, cols_v)
 
 # read metadata of ONE BAND raster for output (damit es 1:1 zum ganzen Bild passt)
 template = {}
-template_raster = r"C:\Users\felix\Documents\wald\vinschgau\B02_nachher.tiff"
+template_raster = r"C:\Users\felix\Documents\wald\vinschgau\resampled\rs_B02_nachher.tiff"
 
 # herausschreiben auf ein vorhergenommenes raster
 with rasterio.open(template_raster, "r") as img:
