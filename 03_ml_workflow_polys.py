@@ -142,7 +142,15 @@ print(cnf_mat)
 print("OOB score:", rf.oob_score_)
 
 # plot confusion matrix
-disp = ConfusionMatrixDisplay(confusion_matrix=cnf_mat)
+labels = ["unburned", "burned"]
+
+cnf_mat = confusion_matrix(y_test, y_pred, labels=[0, 1])
+
+disp = ConfusionMatrixDisplay(
+    confusion_matrix=cnf_mat,
+    display_labels=labels
+)
+
 disp.plot()
 plt.show()
 
