@@ -21,6 +21,7 @@ ref_band = [f for f in input_dir_reference.glob("*.tiff") if "B02" in f.name][0]
 with rasterio.open(ref_band) as ref:
     target_res = ref.res[0]    # <<< NUR Pixelgröße
 
+
 ##### Resample Bänder (nur Auflösung!) ######
 
 band_files_vinschgau = list(input_dir.glob("*.tiff"))
