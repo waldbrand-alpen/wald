@@ -223,3 +223,6 @@ with rasterio.open(
     fobj.write(y_pred_all_2d_Vinschgau, 1)
 
 print("fertig: predicted_labels_vinschgau_full.tif")
+
+
+####### Predict on full image and create GEO Output for Vinschgau ENDE ######
