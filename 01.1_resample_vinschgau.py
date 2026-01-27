@@ -10,8 +10,8 @@ from pathlib import Path
 ##### Pfade ######
 
 input_dir_reference = Path(r"C:\Users\Basti\Documents\Projekt_Waldbrand\wald\post_utm\resampled")
-input_dir = Path(r"C:\Users\Basti\Documents\Projekt_Waldbrand\wald\vinschgau_2")
-output_dir = Path(r"C:\Users\Basti\Documents\Projekt_Waldbrand\wald\vinschgau_2\resampled")
+input_dir = Path(r"C:\Users\Basti\Documents\Projekt_Waldbrand\wald\portugal_vila_real")
+output_dir = Path(r"C:\Users\Basti\Documents\Projekt_Waldbrand\wald\portugal_vila_real\resample")
 
 
 ##### Referenzband laden (NUR Pixelgröße von B02!) ######
@@ -79,7 +79,7 @@ print("resampling done (pixel size only).")
 ref_b02 = r"C:\Users\Basti\Documents\Projekt_Waldbrand\wald\post_utm\resampled\rs_2024-09-05-00_00_2024-09-05-23_59_Sentinel-2_L2A_B02_(Raw).tiff"
 
 # Resampelte Vinschgau-Bänder
-vinschgau_dir = Path(r"C:\Users\Basti\Documents\Projekt_Waldbrand\wald\vinschgau_2\resampled")
+vinschgau_dir = Path(r"C:\Users\Basti\Documents\Projekt_Waldbrand\wald\portugal_vila_real\resample")
 
 with rasterio.open(ref_b02) as ref:
     ref_res = ref.res
