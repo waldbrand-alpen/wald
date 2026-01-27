@@ -296,7 +296,7 @@ overlay[pred == 1] = 1
 
 plt.figure(figsize=(12, 12))
 plt.imshow(rgb)
-plt.imshow(overlay, cmap="Reds", alpha=ALPHA)
+plt.imshow(overlay, cmap="YlOrRd", alpha=ALPHA)
 plt.title("Burned Area – True Color Overlay")
 plt.axis("off")
 plt.tight_layout()
