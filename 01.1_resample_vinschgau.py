@@ -9,9 +9,9 @@ from pathlib import Path
 
 ##### Pfade ######
 
-input_dir_reference = Path(r"C:\Users\felix\Documents\wald\post_utm\resampled")
-input_dir = Path(r"C:\Users\felix\Documents\wald\vinschgau")
-output_dir = Path(r"C:\Users\felix\Documents\wald\vinschgau\resampled")
+input_dir_reference = Path(r"C:\Users\Basti\Documents\Projekt_Waldbrand\wald\post_utm\resampled")
+input_dir = Path(r"C:\Users\Basti\Documents\Projekt_Waldbrand\wald\vinschgau_2")
+output_dir = Path(r"C:\Users\Basti\Documents\Projekt_Waldbrand\wald\vinschgau_2\resampled")
 
 
 ##### Referenzband laden (NUR Pixelgröße von B02!) ######
@@ -76,10 +76,10 @@ print("resampling done (pixel size only).")
 
 
 # Referenz: B02 (Jasper)
-ref_b02 = r"C:\Users\felix\Documents\wald\post_utm\resampled\rs_2024-09-05-00_00_2024-09-05-23_59_Sentinel-2_L2A_B02_(Raw).tiff"
+ref_b02 = r"C:\Users\Basti\Documents\Projekt_Waldbrand\wald\post_utm\resampled\rs_2024-09-05-00_00_2024-09-05-23_59_Sentinel-2_L2A_B02_(Raw).tiff"
 
 # Resampelte Vinschgau-Bänder
-vinschgau_dir = Path(r"C:\Users\felix\Documents\wald\vinschgau\resampled")
+vinschgau_dir = Path(r"C:\Users\Basti\Documents\Projekt_Waldbrand\wald\vinschgau_2\resampled")
 
 with rasterio.open(ref_b02) as ref:
     ref_res = ref.res
