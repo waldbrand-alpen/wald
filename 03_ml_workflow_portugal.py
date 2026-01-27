@@ -236,49 +236,42 @@ from sklearn.model_selection import train_test_split
 # ####### Predict on full image and create GEO Output for Vinschgau ENDE ######
 
 ##############################################################
-# TRUE COLOR + CLASSIFICATION OVERLAY PLOT
-##############################################################
-
-##############################################################
-# TRUE COLOR + CLASSIFICATION OVERLAY (kein Resampling nötig)
+# Plot TRUE COLOR + CLASSIFICATION OVERLAY
 ##############################################################
 
 ALPHA = 0.6
 
-# ------------------------------------------------
 # Pfade
-# ------------------------------------------------
+
 truecolor_dir = Path(
-    r"C:\Users\Basti\Documents\Projekt_Waldbrand\wald\vinschgau_2\resampled"
+    r"C:\Users\Basti\Documents\Projekt_Waldbrand\wald\portugal_vila_real\resample"
 )
 
 prediction_path = Path(
-    r"C:\Users\Basti\Documents\Projekt_Waldbrand\wald\output_data\predicted_labels_vinschgau_2_full.tif"
+    r"C:\Users\Basti\Documents\Projekt_Waldbrand\wald\output_data\predicted_labels_portugal_full.tif"
 )
 
 out_plot = Path(
-    r"C:\Users\Basti\Documents\Projekt_Waldbrand\wald\output_data\overlay_truecolor_burned_vinschgau_2.png"
+    r"C:\Users\Basti\Documents\Projekt_Waldbrand\wald\output_data\overlay_truecolor_burned_portugal.png"
 )
 
-# ----------------------------
-# Helper: nice visualization
-# ----------------------------
+
+# Helper: visualization
+
 def normalize(arr, pmin=2, pmax=98):
     arr = arr.astype(np.float32)
     vmin, vmax = np.percentile(arr[arr > 0], (pmin, pmax))
     arr = (arr - vmin) / (vmax - vmin)
     return np.clip(arr, 0, 1)
 
-# ----------------------------
 # Read True Color bands
-# ----------------------------
+
 b02 = rasterio.open(next(truecolor_dir.glob("*B02*.tif*"))).read(1)
 b03 = rasterio.open(next(truecolor_dir.glob("*B03*.tif*"))).read(1)
 b04 = rasterio.open(next(truecolor_dir.glob("*B04*.tif*"))).read(1)
 
-# ----------------------------
 # Read prediction
-# ----------------------------
+
 with rasterio.open(prediction_path) as src:
     pred = src.read(1)
     nodata = src.nodata
@@ -286,24 +279,21 @@ with rasterio.open(prediction_path) as src:
 if nodata is None:
     nodata = 255
 
-# ----------------------------
 # Build RGB
-# ----------------------------
+
 rgb = np.dstack([
     normalize(b04),
     normalize(b03),
     normalize(b02)
 ])
 
-# ----------------------------
 # Overlay (nur burned = 1)
-# ----------------------------
+
 overlay = np.full(pred.shape, np.nan)
 overlay[pred == 1] = 1
 
-# ----------------------------
 # Plot
-# ----------------------------
+
 plt.figure(figsize=(12, 12))
 plt.imshow(rgb)
 plt.imshow(overlay, cmap="Reds", alpha=ALPHA)
