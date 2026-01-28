@@ -13,10 +13,10 @@ nodata_value = -1
 
 ######## PFADE #########
 
-# path to vector dataset (polygons)
+# path to vector dataset (polygone)
 training_vector = r"C:\Users\felix\Documents\wald\output_data\Polygone_burned_unburned.shp"
 
-# path to template raster (resampled B02!)
+# path to template raster (resampled B02)
 template_raster = r"C:\Users\felix\Documents\wald\post_utm\resampled\rs_2024-09-05-00_00_2024-09-05-23_59_Sentinel-2_L2A_B02_(Raw).tiff"
 
 # path to rasterized output
@@ -36,7 +36,7 @@ ymax = transform.f
 xmax = xmin + width * transform.a
 ymin = ymax + height * transform.e
 
-######## Auflösuung vom template Raster holen ENDE #########
+######## Auflösung vom template Raster holen ENDE #########
 
 ######## Rasterize Labels #########
 
@@ -61,3 +61,5 @@ with rasterio.open(template_raster) as src:
 
 with rasterio.open(training_raster) as src:
     print("Training raster shape:", src.shape)
+
+print("done.")

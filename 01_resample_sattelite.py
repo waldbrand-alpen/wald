@@ -35,7 +35,7 @@ with rasterio.open(ref_band) as ref:
 for band_path in band_files:
 
     out_name = "rs_" + band_path.name
-    out_path = output_dir / out_name 
+    out_path = output_dir / out_name
 
     with rasterio.open(band_path) as src:
         src_data = src.read(1).astype(np.float32)
@@ -63,4 +63,4 @@ for band_path in band_files:
             dst.write(dst_data, 1)
 
 
-print("resampling done.") 
+print("done.")

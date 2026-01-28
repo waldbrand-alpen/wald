@@ -1,5 +1,3 @@
-# # DER WORKFLOW AUS SESSION 6 VOM ANDY, MUSS NOCH ANGEPASST WERDEN
-
 
 # # imports
 from tempfile import template
@@ -22,18 +20,6 @@ from sklearn.model_selection import train_test_split
 #     with rasterio.open(path_to_img, "r") as img:
 #         return img.read(1).astype(np.float32)
 
-# # feste Band-Reihenfolge (MUSS für beide Gebiete identisch sein!)
-# band_order = ["B02", "B03", "B04", "B8A", "B12"]
-
-# s2_bands = Path(r"C:\Users\Basti\Documents\Projekt_Waldbrand\wald\post_utm\resampled")
-
-# bands = []
-# for b in band_order:
-#     band_path = next(s2_bands.glob(f"*{b}*.tiff"))
-#     bands.append(read_band(band_path))
-
-# bands = np.dstack(bands)
-# print("Bänderformat Jasper:", bands.shape)
 
 # # s2_bands = Path(r"C:\Users\felix\Documents\wald\post_utm\resampled")
 
@@ -51,18 +37,6 @@ from sklearn.model_selection import train_test_split
 
 # ####### STACK BANDS Vinschgau ######
 
-# # helper function for reading bands
-
-# s2_bands_vinschgau = Path(r"C:\Users\Basti\Documents\Projekt_Waldbrand\wald\portugal_vila_real\resample")
-
-# bands_vinschgau = []
-# for b in band_order:
-#     band_path = next(s2_bands_vinschgau.glob(f"*{b}*.tiff"))
-#     bands_vinschgau.append(read_band(band_path))
-
-# bands_vinschgau = np.dstack(bands_vinschgau)
-# print("Bänderformat Vinschgau:", bands_vinschgau.shape)
-
 # # s2_bands_vinschgau = Path(r"C:\Users\felix\Documents\wald\vinschgau\resampled")
 
 # # bands_vinschgau = []
@@ -70,9 +44,9 @@ from sklearn.model_selection import train_test_split
 # #     data = read_band(band)
 # #     bands_vinschgau.append(data)
 
-# # # print(bands)
+# # # print(bands_vinschgau)
 # # bands_vinschgau = np.dstack(bands_vinschgau)
-# # print("Bänderformat Vinchgau:", bands.shape)
+# # print("Bänderformat Vinchgau:", bands_vinschgau.shape)
 
 # ####### STACK BANDS Vinschgau ENDE ######
 
@@ -229,7 +203,7 @@ from sklearn.model_selection import train_test_split
 # ) as fobj:
 #     fobj.write(y_pred_all_2d_Vinschgau, 1)
 
-# print("fertig: predicted_labels_vinschgau_full.tif")
+# print("done.")
 
 
 # ####### Predict on full image and create GEO Output for Vinschgau ENDE ######
