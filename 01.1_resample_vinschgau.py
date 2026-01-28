@@ -14,12 +14,12 @@ input_dir = Path(r"C:\Users\Basti\Documents\Projekt_Waldbrand\wald\portugal_vila
 output_dir = Path(r"C:\Users\Basti\Documents\Projekt_Waldbrand\wald\portugal_vila_real\resample")
 
 
-##### Referenzband laden (NUR Pixelgröße von B02!) ######
+##### Referenzband laden (NUR Pixelgröße) ######
 
 ref_band = [f for f in input_dir_reference.glob("*.tiff") if "B02" in f.name][0]
 
 with rasterio.open(ref_band) as ref:
-    target_res = ref.res[0]    # <<< NUR Pixelgröße
+    target_res = ref.res[0]    # Pixelgröße
 
 
 ##### Resample Bänder (nur Auflösung!) ######
@@ -71,8 +71,7 @@ for band_path in band_files_vinschgau:
         with rasterio.open(out_path, "w", **out_profile) as dst:
             dst.write(dst_data, 1)
 
-print("resampling done (pixel size only).")
-
+print("resampling done (pixel size).")
 
 
 # Referenz: B02 (Jasper)
@@ -88,4 +87,6 @@ print("B02 Pixelgröße:", ref_res)
 
 for band in vinschgau_dir.glob("rs_*.tiff"):
     with rasterio.open(band) as src:
-        print(f"{band.name} → Pixelgröße: {src.res}")
+        print(f"{band.name} = Pixelgröße: {src.res}")
+
+print("done.")

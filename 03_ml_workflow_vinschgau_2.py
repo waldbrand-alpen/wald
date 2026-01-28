@@ -1,6 +1,3 @@
-# DER WORKFLOW AUS SESSION 6 VOM ANDY, MUSS NOCH ANGEPASST WERDEN
-
-
 # imports
 import matplotlib.pyplot as plt
 from tempfile import template

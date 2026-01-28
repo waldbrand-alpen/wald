@@ -1,5 +1,3 @@
-# DER WORKFLOW AUS SESSION 6 VOM ANDY, MUSS NOCH ANGEPASST WERDEN
-
 
 # imports
 import matplotlib.pyplot as plt
@@ -23,7 +21,7 @@ def read_band(path_to_img):
     with rasterio.open(path_to_img, "r") as img:
         return img.read(1).astype(np.float32)
 
-# feste Band-Reihenfolge (MUSS für beide Gebiete identisch sein!)
+# feste Band-Reihenfolge (sollte für beide Gebiete identisch sein!)
 band_order = ["B02", "B03", "B04", "B8A", "B12"]
 
 s2_bands = Path(r"C:\Users\felix\Documents\wald\post_utm\resampled")
