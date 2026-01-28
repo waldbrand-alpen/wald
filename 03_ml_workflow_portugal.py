@@ -2,7 +2,6 @@
 
 
 # # imports
-import matplotlib.pyplot as plt
 from tempfile import template
 import numpy as np
 import rasterio
@@ -235,43 +234,34 @@ from sklearn.model_selection import train_test_split
 
 # ####### Predict on full image and create GEO Output for Vinschgau ENDE ######
 
-##############################################################
-# Plot TRUE COLOR + CLASSIFICATION OVERLAY
-##############################################################
+# Overlay Plot Portugal 
 
+import matplotlib
+import matplotlib.pyplot as plt
+import matplotlib.patches as mpatches
+
+# Transparenz für Overlay
 ALPHA = 0.6
 
 # Pfade
-
-truecolor_dir = Path(
-    r"C:\Users\Basti\Documents\Projekt_Waldbrand\wald\portugal_vila_real\resample"
-)
-
-prediction_path = Path(
-    r"C:\Users\Basti\Documents\Projekt_Waldbrand\wald\output_data\predicted_labels_portugal_full.tif"
-)
-
-out_plot = Path(
-    r"C:\Users\Basti\Documents\Projekt_Waldbrand\wald\output_data\overlay_truecolor_burned_portugal.png"
-)
+truecolor_dir = Path(r"C:\Users\Basti\Documents\Projekt_Waldbrand\wald\vinschgau\resampled")
+prediction_path = Path(r"C:\Users\Basti\Documents\Projekt_Waldbrand\wald\output_data\predicted_labels_vinschgau_full.tif")
+out_plot = Path(r"C:\Users\Basti\Documents\Projekt_Waldbrand\wald\output_data\overlay_truecolor_burned_vinschgau.png")
 
 
-# Helper: visualization
-
+# Helper-Funktion zur Normalisierung
 def normalize(arr, pmin=2, pmax=98):
     arr = arr.astype(np.float32)
     vmin, vmax = np.percentile(arr[arr > 0], (pmin, pmax))
     arr = (arr - vmin) / (vmax - vmin)
     return np.clip(arr, 0, 1)
 
-# Read True Color bands
-
+# Bänder lesen
 b02 = rasterio.open(next(truecolor_dir.glob("*B02*.tif*"))).read(1)
 b03 = rasterio.open(next(truecolor_dir.glob("*B03*.tif*"))).read(1)
 b04 = rasterio.open(next(truecolor_dir.glob("*B04*.tif*"))).read(1)
 
 # Read prediction
-
 with rasterio.open(prediction_path) as src:
     pred = src.read(1)
     nodata = src.nodata
@@ -279,26 +269,44 @@ with rasterio.open(prediction_path) as src:
 if nodata is None:
     nodata = 255
 
-# Build RGB
-
+# RGB erstellen aus einzelnen Bändern 
 rgb = np.dstack([
     normalize(b04),
     normalize(b03),
     normalize(b02)
 ])
 
-# Overlay (nur burned = 1)
-
+# Overlay (nur burned Bereich)
 overlay = np.full(pred.shape, np.nan)
 overlay[pred == 1] = 1
 
-# Plot
-
+# Plotten zum visualisieren 
 plt.figure(figsize=(12, 12))
 plt.imshow(rgb)
-plt.imshow(overlay, cmap="YlOrRd", alpha=ALPHA)
-plt.title("Burned Area – True Color Overlay")
+im = plt.imshow(overlay, cmap="YlOrRd", alpha=ALPHA)
+plt.title("Burned Area – Vila Real (Portugal)",
+          fontsize=32
+)
 plt.axis("off")
+overlay_color = plt.cm.YlOrRd(0.1)
+
+legend_elements = [
+    mpatches.Patch(
+        facecolor=overlay_color,
+        edgecolor="black",
+        label="Burned Area"
+    )
+]
+
+plt.legend(
+    handles=legend_elements,
+    loc="upper left",
+    frameon=True,
+    facecolor="white",
+    framealpha=0.9,
+    fontsize=16
+)
+
 plt.tight_layout()
 plt.savefig(out_plot, dpi=300)
 plt.close()
