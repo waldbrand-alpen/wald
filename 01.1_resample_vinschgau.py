@@ -9,9 +9,9 @@ from pathlib import Path
 
 ##### Pfade ######
 
-input_dir_reference = Path(r"C:\Users\Basti\Documents\Projekt_Waldbrand\wald\post_utm\resampled")
-input_dir = Path(r"C:\Users\Basti\Documents\Projekt_Waldbrand\wald\portugal_vila_real")
-output_dir = Path(r"C:\Users\Basti\Documents\Projekt_Waldbrand\wald\portugal_vila_real\resample")
+input_dir_reference = Path(r"C:\Users\felix\Documents\wald\post_utm\resampled")
+input_dir = Path(r"C:\Users\felix\Documents\wald\vinschgau")
+output_dir = Path(r"C:\Users\felix\Documents\wald\vinschgau\resampled")
 
 
 ##### Referenzband laden (NUR Pixelgröße) ######
