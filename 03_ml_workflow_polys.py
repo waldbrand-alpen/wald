@@ -29,7 +29,7 @@ for band in s2_bands.glob("*.tiff"):
 
 # print(bands)
 bands = np.dstack(bands)
-print("Bänderformat:", bands.shape)
+print("Bänderformat Jasper:", bands.shape)
 
 ###### STACK BANDS Jasper ENDE ######
 
@@ -84,13 +84,13 @@ print("X_Vinschgau shape after reshape:", X_vinschgau.shape)
 
 ####### No-Data bearbeiten ######
 
-# eliminate no-data pixels from both S2 array and labels (no data value is -1)
+# eliminate no-data pixels 
 y_clean = y[y >= 0]
 X_clean = X[y >= 0, :]
 
-# check that the shape of the cleaned data sets matches
-print(X_clean.shape)
-print(y_clean.shape)
+# check von No-Data bereinigung
+print("X without No-Data:",X_clean.shape)
+print("y without No-Data:", y_clean.shape)
 
 ####### No-Data bearbeiten ENDE ######
 
@@ -163,7 +163,7 @@ with rasterio.open(
 ) as fobj:
     fobj.write(y_pred_all_2d, 1)
 
-print("fertig: predicted_labels_jasper_full.tif")
+print("Jasper done.")
 
 ####### Predict on full image and create GEO Output for Jasper ENDE ######
 
@@ -202,7 +202,7 @@ with rasterio.open(
 ) as fobj:
     fobj.write(y_pred_all_2d_Vinschgau, 1)
 
-print("done.")
+print("Vinschgau done.")
 
 
 ####### Predict on full image and create GEO Output for Vinschgau ENDE ######
