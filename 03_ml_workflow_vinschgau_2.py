@@ -20,57 +20,32 @@ def read_band(path_to_img):
     with rasterio.open(path_to_img, "r") as img:
         return img.read(1).astype(np.float32)
 
-# feste Band-Reihenfolge (MUSS für beide Gebiete identisch sein!)
-band_order = ["B02", "B03", "B04", "B8A", "B12"]
-
-s2_bands = Path(r"C:\Users\Basti\Documents\Projekt_Waldbrand\wald\post_utm\resampled")
+s2_bands = Path(r"C:\Users\felix\Documents\wald\post_utm\resampled")
 
 bands = []
-for b in band_order:
-    band_path = next(s2_bands.glob(f"*{b}*.tiff"))
-    bands.append(read_band(band_path))
+for band in s2_bands.glob("*.tiff"):
+    data = read_band(band)
+    bands.append(data)
 
+# print(bands)
 bands = np.dstack(bands)
-print("Bänderformat Jasper:", bands.shape)
-
-# s2_bands = Path(r"C:\Users\felix\Documents\wald\post_utm\resampled")
-
-# bands = []
-# for band in s2_bands.glob("*.tiff"):
-#     data = read_band(band)
-#     bands.append(data)
-
-# # print(bands)
-# bands = np.dstack(bands)
-# print("Bänderformat:", bands.shape)
+print("Bänderformat:", bands.shape)
 
 ###### STACK BANDS Jasper ENDE ######
 
 
 ####### STACK BANDS Vinschgau ######
 
-# helper function for reading bands
-
-s2_bands_vinschgau = Path(r"C:\Users\Basti\Documents\Projekt_Waldbrand\wald\vinschgau_2\resampled")
+s2_bands_vinschgau = Path(r"C:\Users\felix\Documents\wald\vinschgau\resampled")
 
 bands_vinschgau = []
-for b in band_order:
-    band_path = next(s2_bands_vinschgau.glob(f"*{b}*.tiff"))
-    bands_vinschgau.append(read_band(band_path))
+for band in s2_bands_vinschgau.glob("*.tiff"):
+    data = read_band(band)
+    bands_vinschgau.append(data)
 
+# print(bands)
 bands_vinschgau = np.dstack(bands_vinschgau)
-print("Bänderformat Vinschgau:", bands_vinschgau.shape)
-
-# s2_bands_vinschgau = Path(r"C:\Users\felix\Documents\wald\vinschgau\resampled")
-
-# bands_vinschgau = []
-# for band in s2_bands_vinschgau.glob("*.tiff"):
-#     data = read_band(band)
-#     bands_vinschgau.append(data)
-
-# # print(bands)
-# bands_vinschgau = np.dstack(bands_vinschgau)
-# print("Bänderformat Vinchgau:", bands.shape)
+print("Bänderformat Vinchgau:", bands_vinschgau.shape)
 
 ####### STACK BANDS Vinschgau ENDE ######
 
