@@ -55,7 +55,7 @@ for band_path in band_files_vinschgau:
             src_transform=src.transform,
             src_crs=src.crs,
             dst_transform=dst_transform,
-            dst_crs=src.crs,          # <<< CRS bleibt identisch
+            dst_crs=src.crs,
             resampling=Resampling.bilinear
         )
 
@@ -71,7 +71,7 @@ for band_path in band_files_vinschgau:
         with rasterio.open(out_path, "w", **out_profile) as dst:
             dst.write(dst_data, 1)
 
-print("resampling done (pixel size).")
+print("done.")
 
 
 # Referenz: B02 (Jasper)
