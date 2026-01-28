@@ -204,7 +204,7 @@ from sklearn.model_selection import train_test_split
 # ) as fobj:
 #     fobj.write(y_pred_all_2d_Vinschgau, 1)
 
-# print("fertig: predicted_labels_vinschgau_full.tif")
+# print("done.")
 
 
 # ####### Predict on full image and create GEO Output for Vinschgau ENDE ######

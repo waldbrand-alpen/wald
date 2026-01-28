@@ -136,7 +136,7 @@ y_full_pred = rf.predict(X)
 # reshape to 2D array
 y_pred_all_2d = y_full_pred.reshape(rows, cols)
 
-# y_pred_all_2d[y >= 0] = y_full_pred # no Data 
+# y_pred_all_2d[y >= 0] = y_full_pred # no Data
 
 # read metadata of ONE BAND raster for output (damit es 1:1 zum ganzen Bild passt)
 template = {}
@@ -202,7 +202,7 @@ with rasterio.open(
 ) as fobj:
     fobj.write(y_pred_all_2d_Vinschgau, 1)
 
-print("fertig: predicted_labels_vinschgau_full.tif")
+print("done.")
 
 
 ####### Predict on full image and create GEO Output for Vinschgau ENDE ######
