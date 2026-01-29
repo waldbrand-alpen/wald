@@ -110,7 +110,7 @@ y_pred = rf.predict(X_test)
 
 # calculate confusion matrix
 cnf_mat = confusion_matrix(y_test, y_pred)
-print(cnf_mat)
+# print(cnf_mat)
 print("OOB score:", rf.oob_score_)
 
 # plot confusion matrix
