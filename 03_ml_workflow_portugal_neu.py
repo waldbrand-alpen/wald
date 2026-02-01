@@ -1,5 +1,10 @@
+# DER WORKFLOW AUS SESSION 6 VOM ANDY, MUSS NOCH ANGEPASST WERDEN
 
-# # imports
+
+# imports
+import matplotlib
+import matplotlib.pyplot as plt
+import matplotlib.patches as mpatches
 from tempfile import template
 import numpy as np
 import rasterio
@@ -20,35 +25,37 @@ def read_band(path_to_img):
     with rasterio.open(path_to_img, "r") as img:
         return img.read(1).astype(np.float32)
 
+# feste Band-Reihenfolge (MUSS für beide Gebiete identisch sein!)
+band_order = ["B02", "B03", "B04", "B8A", "B12"]
 
-# s2_bands = Path(r"C:\Users\felix\Documents\wald\post_utm\resampled")
+s2_bands = Path(r"C:\Users\Basti\Documents\Projekt_Waldbrand\wald\post_utm\resampled")
 
-# bands = []
-# for band in s2_bands.glob("*.tiff"):
-#     data = read_band(band)
-#     bands.append(data)
+bands = []
+for b in band_order:
+    band_path = next(s2_bands.glob(f"*{b}*.tiff"))
+    bands.append(read_band(band_path))
 
-# # print(bands)
-# bands = np.dstack(bands)
-# print("Bänderformat:", bands.shape)
+bands = np.dstack(bands)
+print("Bänderformat Jasper:", bands.shape)
 
 ###### STACK BANDS Jasper ENDE ######
 
 
-####### STACK BANDS Vinschgau ######
+####### STACK BANDS Portugal ######
 
-# s2_bands_vinschgau = Path(r"C:\Users\felix\Documents\wald\vinschgau\resampled")
+# helper function for reading bands
 
-# bands_vinschgau = []
-# for band in s2_bands_vinschgau.glob("*.tiff"):
-#     data = read_band(band)
-#     bands_vinschgau.append(data)
+s2_bands_vinschgau = Path(r"C:\Users\Basti\Documents\Projekt_Waldbrand\wald\portugal_vila_real\resample")
 
-# # print(bands_vinschgau)
-# bands_vinschgau = np.dstack(bands_vinschgau)
-# print("Bänderformat Vinchgau:", bands_vinschgau.shape)
+bands_vinschgau = []
+for b in band_order:
+    band_path = next(s2_bands_vinschgau.glob(f"*{b}*.tiff"))
+    bands_vinschgau.append(read_band(band_path))
 
-####### STACK BANDS Vinschgau ENDE ######
+bands_vinschgau = np.dstack(bands_vinschgau)
+print("Bänderformat Portugal:", bands_vinschgau.shape)
+
+####### STACK BANDS Portugal ENDE ######
 
 
 ###### LABEL BLOCK ######
@@ -203,18 +210,15 @@ with rasterio.open(
 ) as fobj:
     fobj.write(y_pred_all_2d_Vinschgau, 1)
 
-print("done.")
+print("fertig: predicted_labels_vinschgau_full.tif")
 
 
 ####### Predict on full image and create GEO Output for Vinschgau ENDE ######
 
 # Overlay Plot Portugal 
-
-import matplotlib
-import matplotlib.pyplot as plt
-import matplotlib.patches as mpatches
-
 # Transparenz für Overlay
+from matplotlib.colors import ListedColormap
+
 ALPHA = 0.6
 
 # Pfade
@@ -253,16 +257,17 @@ rgb = np.dstack([
 # Overlay (nur burned Bereich)
 overlay = np.full(pred.shape, np.nan)
 overlay[pred == 1] = 1
+overlay_color = plt.cm.YlOrRd(0.95)
 
+burn_cmap = ListedColormap([plt.cm.YlOrRd(0.95)])
 # Plotten zum visualisieren 
 plt.figure(figsize=(12, 12))
 plt.imshow(rgb)
-im = plt.imshow(overlay, cmap="YlOrRd", alpha=ALPHA)
+im = plt.imshow(overlay, cmap=burn_cmap, alpha=ALPHA)
 plt.title("Burned Area – Vila Real (Portugal)",
           fontsize=32
 )
 plt.axis("off")
-overlay_color = plt.cm.YlOrRd(0.95)
 
 legend_elements = [
     mpatches.Patch(
