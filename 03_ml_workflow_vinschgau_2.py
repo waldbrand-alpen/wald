@@ -20,28 +20,17 @@ from sklearn.metrics import confusion_matrix, ConfusionMatrixDisplay
 #         return img.read(1).astype(np.float32)
 
 # feste Band-Reihenfolge (MUSS für beide Gebiete identisch sein!)
-band_order = ["B02", "B03", "B04", "B8A", "B12"]
+# band_order = ["B02", "B03", "B04", "B8A", "B12"]
 
-s2_bands = Path(r"C:\Users\Basti\Documents\Projekt_Waldbrand\wald\post_utm\resampled")
-
-bands = []
-for b in band_order:
-    band_path = next(s2_bands.glob(f"*{b}*.tiff"))
-    bands.append(read_band(band_path))
-
-bands = np.dstack(bands)
-print("Bänderformat Jasper:", bands.shape)
-
-# s2_bands = Path(r"C:\Users\felix\Documents\wald\post_utm\resampled")
+# s2_bands = Path(r"C:\Users\Basti\Documents\Projekt_Waldbrand\wald\post_utm\resampled")
 
 # bands = []
-# for band in s2_bands.glob("*.tiff"):
-#     data = read_band(band)
-#     bands.append(data)
+# for b in band_order:
+#     band_path = next(s2_bands.glob(f"*{b}*.tiff"))
+#     bands.append(read_band(band_path))
 
-# # print(bands)
 # bands = np.dstack(bands)
-# print("Bänderformat:", bands.shape)
+# print("Bänderformat Jasper:", bands.shape)
 
 ###### STACK BANDS Jasper ENDE ######
 
@@ -50,37 +39,15 @@ print("Bänderformat Jasper:", bands.shape)
 
 # helper function for reading bands
 
-s2_bands_vinschgau = Path(r"C:\Users\Basti\Documents\Projekt_Waldbrand\wald\vinschgau_2\resampled")
-
-bands_vinschgau = []
-for b in band_order:
-    band_path = next(s2_bands_vinschgau.glob(f"*{b}*.tiff"))
-    bands_vinschgau.append(read_band(band_path))
-
-bands_vinschgau = np.dstack(bands_vinschgau)
-print("Bänderformat Vinschgau:", bands_vinschgau.shape)
-
-# s2_bands_vinschgau = Path(r"C:\Users\felix\Documents\wald\vinschgau\resampled")
+# s2_bands_vinschgau = Path(r"C:\Users\Basti\Documents\Projekt_Waldbrand\wald\vinschgau_2\resampled")
 
 # bands_vinschgau = []
-# for band in s2_bands_vinschgau.glob("*.tiff"):
-#     data = read_band(band)
-#     bands_vinschgau.append(data)
+# for b in band_order:
+#     band_path = next(s2_bands_vinschgau.glob(f"*{b}*.tiff"))
+#     bands_vinschgau.append(read_band(band_path))
 
-# # print(bands)
 # bands_vinschgau = np.dstack(bands_vinschgau)
-# print("Bänderformat Vinchgau:", bands.shape)
-
-# # s2_bands_vinschgau = Path(r"C:\Users\felix\Documents\wald\vinschgau\resampled")
-
-# # bands_vinschgau = []
-# # for band in s2_bands_vinschgau.glob("*.tiff"):
-# #     data = read_band(band)
-# #     bands_vinschgau.append(data)
-
-# # # print(bands)
-# # bands_vinschgau = np.dstack(bands_vinschgau)
-# # print("Bänderformat Vinchgau:", bands.shape)
+# print("Bänderformat Vinschgau:", bands_vinschgau.shape)
 
 # ####### STACK BANDS Vinschgau ENDE ######
 
@@ -242,33 +209,23 @@ print("fertig: predicted_labels_vinschgau_full.tif")
 
 ####### Predict on full image and create GEO Output for Vinschgau ENDE ######
 
-##############################################################
-# Plot TRUE COLOR + CLASSIFICATION OVERLAY
-##############################################################
-
-
+# Overlay Visualization
 import matplotlib
 import matplotlib.pyplot as plt
 import matplotlib.patches as mpatches
+from matplotlib.colors import ListedColormap
 
-ALPHA = 0.6
+burn_cmap = ListedColormap([plt.cm.YlOrRd(0.95)])
+# Transparenz für Overlay
+ALPHA = 0.4
 
 # Pfade
+truecolor_dir = Path(r"C:\Users\Basti\Documents\Projekt_Waldbrand\wald\vinschgau_2\resampled")
+prediction_path = Path(r"C:\Users\Basti\Documents\Projekt_Waldbrand\wald\output_data\predicted_labels_vinschgau_2_full.tif")
+out_plot = Path(r"C:\Users\Basti\Documents\Projekt_Waldbrand\wald\output_data\overlay_truecolor_burned_vinschgau_2.png")
 
-truecolor_dir = Path(
-    r"C:\Users\Basti\Documents\Projekt_Waldbrand\wald\vinschgau_2\resampled"
-)
-
-prediction_path = Path(
-    r"C:\Users\Basti\Documents\Projekt_Waldbrand\wald\output_data\predicted_labels_vinschgau_2_full.tif"
-)
-
-out_plot = Path(
-    r"C:\Users\Basti\Documents\Projekt_Waldbrand\wald\output_data\overlay_truecolor_burned_vinschgau_2.png"
-)
-
-# Helper: nice visualization
-def normalize(arr, nodata=0, pmin=1, pmax=99.8):
+# Helper-Funktion zur Normalisierung
+def normalize(arr, nodata=0, pmin=1, pmax=99.5):
     arr = arr.astype(np.float32)
     arr = np.where(arr == nodata, np.nan, arr)
     vmin, vmax = np.nanpercentile(arr, (pmin, pmax))
@@ -276,23 +233,14 @@ def normalize(arr, nodata=0, pmin=1, pmax=99.8):
     return np.clip(arr, 0, 1)
 
 def apply_gamma(rgb, gamma=0.65):
-    return np.clip(rgb * 6, 0, 1)
+    return np.clip(rgb * 5, 0, 1)
 
-
-#def normalize(arr, pmin=2, pmax=98):
-#    arr = arr.astype(np.float32)
-#    vmin, vmax = np.percentile(arr[arr > 0], (pmin, pmax))
-#    arr = (arr - vmin) / (vmax - vmin)
-#    return np.clip(arr, 0, 1)
-
-# Read True Color bands
-
+# Bänder lesen 
 b02 = rasterio.open(next(truecolor_dir.glob("*B02*.tif*"))).read(1)
 b03 = rasterio.open(next(truecolor_dir.glob("*B03*.tif*"))).read(1)
 b04 = rasterio.open(next(truecolor_dir.glob("*B04*.tif*"))).read(1)
 
 # Read prediction
-
 with rasterio.open(prediction_path) as src:
     pred = src.read(1)
     nodata = src.nodata
@@ -300,28 +248,27 @@ with rasterio.open(prediction_path) as src:
 if nodata is None:
     nodata = 255
 
-# Build RGB
+# RGB erstellen aus einzelnen Bändern 
 rgb = np.dstack([
-    normalize(b04, nodata=0, pmin=1, pmax=99.8),
-    normalize(b03, nodata=0, pmin=1, pmax=99.8),
-    normalize(b02, nodata=0, pmin=1, pmax=99.8)
+    normalize(b04, nodata=0, pmin=1, pmax=99.5),
+    normalize(b03, nodata=0, pmin=1, pmax=99.5),
+    normalize(b02, nodata=0, pmin=1, pmax=99.5)
 ])
 rgb = apply_gamma(rgb, gamma=0.8)
 
-# Overlay (nur burned = 1)
-
+# Overlay (nur burned Bereich)
 overlay = np.full(pred.shape, np.nan)
 overlay[pred == 1] = 1
 
-# Plot
+# Plotten zum visualisieren 
 plt.figure(figsize=(12, 12))
 plt.imshow(rgb)
-im = plt.imshow(overlay, cmap="YlOrRd", alpha=ALPHA)
-plt.title("Burned Area – Vinschgau2",
+im = plt.imshow(overlay, cmap=burn_cmap, alpha=ALPHA)
+plt.title("Burned Area – Vinschgau 2",
           fontsize=32
 )
 plt.axis("off")
-overlay_color = plt.cm.YlOrRd(0.1)
+overlay_color = plt.cm.YlOrRd(0.95)
 
 legend_elements = [
     mpatches.Patch(
@@ -346,6 +293,3 @@ plt.close()
 
 print("Overlay gespeichert:")
 print(out_plot)
-
-
-
