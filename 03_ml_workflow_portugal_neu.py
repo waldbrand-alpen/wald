@@ -219,7 +219,6 @@ print("fertig: predicted_labels_vinschgau_full.tif")
 # Transparenz für Overlay
 from matplotlib.colors import ListedColormap
 
-burn_cmap = ListedColormap([plt.cm.YlOrRd(0.95)])
 ALPHA = 0.6
 
 # Pfade
@@ -258,7 +257,9 @@ rgb = np.dstack([
 # Overlay (nur burned Bereich)
 overlay = np.full(pred.shape, np.nan)
 overlay[pred == 1] = 1
+overlay_color = plt.cm.YlOrRd(0.95)
 
+burn_cmap = ListedColormap([plt.cm.YlOrRd(0.95)])
 # Plotten zum visualisieren 
 plt.figure(figsize=(12, 12))
 plt.imshow(rgb)
@@ -267,7 +268,6 @@ plt.title("Burned Area – Vila Real (Portugal)",
           fontsize=32
 )
 plt.axis("off")
-overlay_color = plt.cm.YlOrRd(0.95)
 
 legend_elements = [
     mpatches.Patch(
